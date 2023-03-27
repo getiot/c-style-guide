@@ -501,7 +501,7 @@ UC ccb_aoc_process(void)
 
 **规则2.1 避免函数过长，新增函数不超过50行（非空非注释行)。**
 
-说明:本规则仅对新增函数做要求，对已有函数修改时，建议不增加代码行。
+说明：本规则仅对新增函数做要求，对已有函数修改时，建议不增加代码行。
 
 过长的函数往往意味着函数功能不单一，过于复杂（参见原则2.1:一个函数只完成一个功能)。函数的有效代码行数，即NBNC（非空非注释行)应当在[1，50]区间。
 
@@ -511,7 +511,7 @@ UC ccb_aoc_process(void)
 
  
 
-**规则2.2避免函数的代码块嵌套过深，新增函数的代码块嵌套不超过4层。**
+**规则2.2 避免函数的代码块嵌套过深，新增函数的代码块嵌套不超过4层。**
 
 说明：本规则仅对新增函数做要求，对已有的代码建议不增加嵌套层次。
 
@@ -587,32 +587,33 @@ unsigned **int** example( **int** para )
 
 说明：对于模块间接口函数的参数的合法性检查这一问题，往往有两个极端现象，即:要么是调用者和被调用者对参数均不作合法性检查，结果就遗漏了合法性检查这一必要的处理过程，造成问题隐患;要么就是调用者和被调用者均对参数进行合法性检查，这种情况虽不会造成问题，但产生了冗余代码，降低了效率。
 
-示例：下面红色部分的代码在每一个函数中都写了一次，导致代码有较多的冗余。如果函数的参数比较多，而且判断的条件比较复杂（比如:一个整形数字需要判断范围等），那么冗余的代码会大面积充斥着业务代码。
+示例：下面红色部分的代码在每一个函数中都写了一次，导致代码有较多的冗余。如果函数的参数比较多，而且判断的条件比较复杂（比如：一个整形数字需要判断范围等），那么冗余的代码会大面积充斥着业务代码。
 
 ```c
-void** PidMsgProc(MsgBlock *Msg) 
+void PidMsgProc(MsgBlock *Msg)
 {
-    MsgProcItem *func= NULL;
+    MsgProcItem *func = NULL;
     if (Msg == NULL) {
         return;
     }
-    ... ... 
-    GetMsgProcFun(Msg, &func) ;
+    ...
+    GetMsgProcFun(Msg, &func);
     func(Msg);
     return;
 }
-int** GetMsgProcFun (MsgBlock *Msg, MsgProcItem func)
+
+int GetMsgProcFun (MsgBlock *Msg, MsgProcItem func)
 {
-    if (Msg NULL) {
+    if (Msg == NULL) {
         return 1;
     }
     *func = VOS_NULL_PTR;
     
-    for** (Index = 0;Index< NELEM(g_MsgProcTable); Index++) 
+    for (Index=0; Index<NELEM(g_MsgProcTable); Index++)
     {
-        if ((g_MsgProcTable[Index].FlowType =- Msg->FlowType) \
-            &&(g_MsgProcTable[Index].Status == Msg->Status) \
-            &&(g_MsgProcTable[Index ].MsgType == Msg->MsgType)) 
+        if ((g_MsgProcTable[Index].FlowType == Msg->FlowType) \
+            && (g_MsgProcTable[Index].Status == Msg->Status) \
+            && (g_MsgProcTable[Index ].MsgType == Msg->MsgType)) 
         {
             *func = &(g_MsgProcTable[Index]);
             return 0;
@@ -621,13 +622,13 @@ int** GetMsgProcFun (MsgBlock *Msg, MsgProcItem func)
     return 1;
 }
 
-int ServiceProcess(int CbNo，MsgBlock *Msg) 
+int ServiceProcess(int CbNo, MsgBlock *Msg)
 {
-    if ( Msg ==NULL)
+    if (Msg == NULL)
     {
         return 1;
     }
-    //业务处理代码
+    // 业务处理代码
     return 0;
 }
 ```
@@ -636,7 +637,7 @@ int ServiceProcess(int CbNo，MsgBlock *Msg)
 
 **规则2.5 对函数的错误返回码要全面处理**。
 
-说明:一个函数（标准库中的函数/第三方库函数/用户定义的函数）能够提供一些指示错误发生的方法。这可以通过使用错误标记、特殊的返回数据或者其他手段，不管什么时候函数提供了这样的机制,调用程序应该在函数返回时立刻检查错误指示。
+说明：一个函数（标准库中的函数/第三方库函数/用户定义的函数）能够提供一些指示错误发生的方法。这可以通过使用错误标记、特殊的返回数据或者其他手段，不管什么时候函数提供了这样的机制,调用程序应该在函数返回时立刻检查错误指示。
 
 示例：下面的代码导致宕机
 
@@ -672,7 +673,7 @@ long fileTime = getAlarmTime(buff); //解析获取最新的告警时间;
 
 **规则2.6 设计高扇入，合理扇出（小于7）的函数。**
 
-说明:扇出是指一个函数直接调用（控制）其它函数的数目，而扇入是指有多少上级函数调用它。
+说明：扇出是指一个函数直接调用（控制）其它函数的数目，而扇入是指有多少上级函数调用它。
 
 ![](http://static.getiot.tech/Function-fanout-diagram.png)
 
@@ -686,7 +687,7 @@ long fileTime = getAlarmTime(buff); //解析获取最新的告警时间;
 
 较良好的软件结构通常是顶层函数的扇出较高，中层函数的扇出较少，而底层函数则扇入到公共模块中。
 
-延伸阅读材料:扇入（Fan-in)和扇出（Fan-out）是Henry和Kafura在1981年引入，用来说明模块间的耦合（ coupling），后面人们扩展到函数/方法、模块/类、包等。
+延伸阅读材料：扇入（Fan-in）和扇出（Fan-out）是 Henry 和 Kafura 在 1981 年引入，用来说明模块间的耦合（ coupling），后面人们扩展到函数/方法、模块/类、包等。
 
 The Fan-in (Informational fan-in) metric measures the fan-in of a module. The fan-in of a module A is the number of modules that pass control into module A.
 
@@ -845,31 +846,33 @@ int n_comp_conns;
 
 **原则3.2 除了常见的通用缩写以外，不使用单词缩写，不得使用汉语拼音**。
 
-说明:较短的单词可通过去掉“元音”形成缩写，较长的单词可取单词的头几个字母形成缩写，一些单词有大家公认的缩写，常用单词的缩写必须统一。协议中的单词的缩写与协议保持一致。对于某个系统使用的专用缩写应该在注视或者某处做统一说明。
+说明：较短的单词可通过去掉“元音”形成缩写，较长的单词可取单词的头几个字母形成缩写，一些单词有大家公认的缩写，常用单词的缩写必须统一。协议中的单词的缩写与协议保持一致。对于某个系统使用的专用缩写应该在注视或者某处做统一说明。
 
 一些常见可以缩写的例子：
 
-1. argument 可缩写为 arg
-2. buffer 可缩写为 buff
-3. clock 可缩写为 clk
-4. command 可缩写为 cmd
-5. compare 可缩写为 cmp
-6. configuration 可缩写为 cfg
-7. device 可缩写为 dev
-8. error 可缩写为 err
-9. hexadecimal 可缩写为 hex
-10. increment 可缩写为 inc
-11. initialize 可缩写为 init
-12. maximum 可缩写为 max
-13. message可缩写为 msg
-14. minimum 可缩写为 min
-15. parameter 可缩写为 para
-16. previous 可缩写为 prev
-17. **register** 可缩写为 reg
-18. semaphore 可缩写为 sem
-19. statistic 可缩写为 stat
-20. synchronize 可缩写为 sync
-21. temp 可缩写为 tmp
+| 序号 | 单词          | 缩写 |
+| ---- | ------------- | ---- |
+| 1    | argument      | arg  |
+| 2    | buffer        | buff |
+| 3    | clock         | clk  |
+| 4    | command       | cmd  |
+| 5    | compare       | cmp  |
+| 6    | configuration | cfg  |
+| 7    | device        | dev  |
+| 8    | error         | err  |
+| 9    | hexadecimal   | hex  |
+| 10   | increment     | inc  |
+| 11   | initialize    | init |
+| 12   | maximum       | max  |
+| 13   | message       | msg  |
+| 14   | minimum       | min  |
+| 15   | parameter     | para |
+| 16   | previous      | prev |
+| 17   | register      | reg  |
+| 18   | semaphore     | sem  |
+| 19   | statistic     | stat |
+| 20   | synchronize   | sync |
+| 21   | temp          | tmp  |
 
 
 
@@ -945,7 +948,7 @@ int n_comp_conns;
 
 **规则3.2 全局变量应增加 `g_` 前缀。**
 
- 
+
 
 **规则3.3 静态变量应增加 `s_` 前缀。**
 
@@ -980,7 +983,7 @@ int n_comp_conns;
 示例：找到当前进程的当前目录
 
 ```c
-DWORD XXX_GetCurrentDirectory(DWORD BufferLength，LPTSTR Buffer); 
+DWORD XXX_GetCurrentDirectory(DWORD BufferLength, LPTSTR Buffer); 
 ```
 
 
@@ -991,7 +994,7 @@ DWORD XXX_GetCurrentDirectory(DWORD BufferLength，LPTSTR Buffer);
 
 ### 3.5 宏的命名规则
 
-**规则3.5 对于数值或者字符串等等常量的定义，建议采用全大写字母，单词之间加下划线‘_\*的方式命名(枚举同样建议使用此方式定义)。**
+**规则3.5 对于数值或者字符串等等常量的定义，建议采用全大写字母，单词之间加下划线‘_\*的方式命名（枚举同样建议使用此方式定义）。**
 
 示例：
 
@@ -1329,18 +1332,19 @@ a++; //结果:a = 6，即只执行了一次增。
 示例：下面的代码无法得到想要的结果：
 
 ```c
-#define MAX_MACRO(a,b)((a)>(b)? (a) : (b))
+#define MAX_MACRO(a,b) ((a)>(b) ? (a) : (b))
+
 int MAX_FUNC(int a, int b)
 {
-    return (a) > (b) ? (a) : (b));
+    return ((a) > (b) ? (a) : (b));
 }
 
 int testFunc()
 {
     unsigned int a = 1;
     int b = -1;
-    printf("MACRO: max of a and b is: %d\n", MAX_MACRO(++a， b));
-    printf("FUNC : max of a and b is: %d\n", MAX_FUNC(a， b));
+    printf("MACRO: max of a and b is: %d\n", MAX_MACRO(++a, b));
+    printf("FUNC : max of a and b is: %d\n", MAX_FUNC(a, b));
     return 0;
 }
 ```
@@ -1632,9 +1636,9 @@ sum += ch;  // 故sum的结果不是328，而是72。
 
 
 
-**建议6.2 if语句尽量加上else分支，对没有else分支的语句要小心对待。**
+**建议6.2 if 语句尽量加上 else 分支，对没有 else 分支的语句要小心对待。**
 
- 
+
 
 **建议6.3 禁止使用 goto 语句。**
 
@@ -1650,23 +1654,23 @@ int foo(void)
     char* p3 = NULL;
     int result = -1;
     
-    p1 = (char *)malloc(Ox100);
+    p1 = (char *)malloc(0x100);
     if (p1 == NULL) {
         goto Exit0;
     }
-    strcpy(p1，"this is pl");
+    strcpy(p1, "this is pl");
     
-    p2 = (char *)malloc(Ox100);
-    if (p2== NULL) {
+    p2 = (char *)malloc(0x100);
+    if (p2 == NULL) {
         goto Exit0;
     }
-    strcpy (p2,"this is p2");
+    strcpy (p2, "this is p2");
     
-    p3 =(char *)malloc(Ox100);
+    p3 =(char *)malloc(0x100);
     if (p3 == NULL) {
         goto Exit0;
     }
-    strcpy (p3，"this is p3");
+    strcpy (p3, "this is p3");
     result = 0;
     
 Exit0:
@@ -1947,7 +1951,7 @@ if (receive_flag) /* if receive_flag is TRUE*/
 
 int time = 0;
 do {
-    write_reg(some_addr，value);
+    write_reg(some_addr, value);
     time++;
 } while ((read_reg(some_addr) != value)&&(time< 3));
 ```
@@ -2027,7 +2031,7 @@ BYTE g_GTTranErrorCode;
 
 
 
-**规则8.5 注释应放在其代码上方相邻位置或右方，不可放在下面。如放于上方则需与其上面的代码用空行隔开,且与下方代码缩进相同。**
+**规则8.5 注释应放在其代码上方相邻位置或右方，不可放在下面。如放于上方则需与其上面的代码用空行隔开，且与下方代码缩进相同。**
 
 示例：
 
@@ -2051,7 +2055,7 @@ enum SCCP_USER_PRIMITIVE
 
 
 
-**规则8.6 对于 switch 语句下的 case 语句，如果因为特殊情况需要处理完一个 case 后进入下一个case处理，必须在该 case 语句处理完、下一个 case 语句前加上明确的注释。**
+**规则8.6 对于 switch 语句下的 case 语句，如果因为特殊情况需要处理完一个 case 后进入下一个 case 处理，必须在该 case 语句处理完、下一个 case 语句前加上明确的注释。**
 
 说明：这样比较清楚程序编写者的意图，有效防止无故遗漏 break 语句。示例（注意斜体加粗部分）：
 
@@ -2133,12 +2137,12 @@ agentpp_simulation_mib * g_agtSimMib;
 
 函数头注释建议写到声明处。并非所有函数都必须写注释，建议针对这样的函数写注释:重要的、复杂的函数，提供外部使用的接口函数。
 
-延伸阅读材料:
+延伸阅读材料：
 
-- 《代码大全第2版》(Steve McConnell著金戈/汤凌/陈硕/张菲 译电子工业出版社2006年3月)"第32章自说明代码"。
-- 《代码整洁之道》(Robert C.Martin著韩磊译人民邮电出版社2010年1月）第四章"注释" 。
-- 《敏捷软件开发:原则、模式与实践》(Robert C.Martin著邓辉译清华大学出版社2003年9月)"第5章重构"。
-- 《Doxygen中文手册》
+- 《代码大全第2版》（Steve McConnell 著金戈/汤凌/陈硕/张菲 译电子工业出版社2006年3月）"第32章自说明代码"。
+- 《代码整洁之道》（Robert C.Martin 著韩磊译人民邮电出版社2010年1月）第四章"注释" 。
+- 《敏捷软件开发：原则、模式与实践》（Robert C.Martin 著邓辉译清华大学出版社2003年9月）"第5章重构"。
+- 《Doxygen 中文手册》
 
 
 
@@ -2171,11 +2175,11 @@ repssn_ni = ssn_data[index].ni;
 应如下书写
 
 ```c
-if** (!valid_ni(ni))
+if (!valid_ni(ni))
 {
     // program code
     ...
-} 
+}
 
 repssn_ind = ssn_data[index].repssn_index;
 repssn_ni = ssn_data[index].ni;
@@ -2197,11 +2201,10 @@ repssn_ni = ssn_data[index].ni;
 
 ```c
 if ((temp_flag_var == TEST_FLAG) \
-    &&(((temp_counter_var – \
-         TEST_COUNT_BEGIN)% TEST_COUNT_MODULE)>= TEST_COUNT_THRESHOLD) 
-    {
-        // process code
-    }
+    && (((temp_counter_var - TEST_COUNT_BEGIN)% TEST_COUNT_MODULE)>= TEST_COUNT_THRESHOLD))
+{
+    // process code
+}
 ```
 
 
@@ -2211,14 +2214,14 @@ if ((temp_flag_var == TEST_FLAG) \
 示例：
 
 ```c
-int a= 5; int b= 10; //不好的排版 
+int a = 5; int b = 10; //不好的排版 
 ```
 
 较好的排版
 
 ```c
-int a=5;
-int b= 10;
+int a = 5;
+int b = 10;
 ```
 
 
@@ -2374,9 +2377,9 @@ int fun2()
 int x = fun1() + fun2();
 ```
 
-编译器可能先计算fun1()，也可能先计算fun2()，由于x的结果依赖于函数fun1 ()/fun2()的计算次序。
+编译器可能先计算 fun1()，也可能先计算 fun2()，由于x的结果依赖于函数 fun1()/fun2() 的计算次序。
 
-(fun1()/fun2()被调用时修改和使用了同一个全局变量)，则上面的代码存在问题。
+fun1()/fun2() 被调用时修改和使用了同一个全局变量，则上面的代码存在问题。
 
 应该修改代码明确 fun1/ fun2 的计算次序：
 
@@ -2392,7 +2395,7 @@ x = x + fun2();
 反面示例：
 
 ```c
-x = y = y =z/3;
+x = y = y = z/3;
 x = y = y++;
 ```
 
@@ -2496,13 +2499,13 @@ x = (a * 3) + c + d;            /*操作符不同，需要括号*/
 x = ( a == b ) ? a : ( a - b ); /*操作符不同，需要括号*/ 
 ```
 
-3、即使所有操作符都是相同的，如果涉及类型转换或者量级提升，也应该使用括号控制计算的次序以下代码将3个浮点数相加:
+3、即使所有操作符都是相同的，如果涉及类型转换或者量级提升，也应该使用括号控制计算的次序以下代码将3个浮点数相加：
 
 ```c
-f4 = f1 + f2+ f3; 
-
-/*除了逗号(,)，逻辑与(&&)，逻辑或(|)之外，C标准没有规定同级操作符是从左还是从右开始计算，以上表达式存在着计算次序:f4 = (f1 + f2)+ f3或f4 = f1 +(f2 + f3)，浮点数计算过程中可能四舍五入，量级提升，计算次序的不同会导致f4的结果不同，以上表达式在不同编译器上的计算结果可能不一样，建议增加括号明确计算顺序*/ 
+f4 = f1 + f2 + f3;
 ```
+
+除了逗号（`,`），逻辑与（`&&`），逻辑或（`|`）之外，C 标准没有规定同级操作符是从左还是从右开始计算，以上表达式存在着计算次序：f4 = (f1 + f2) + f3 或 f4 = f1 + (f2 + f3)，浮点数计算过程中可能四舍五入，量级提升，计算次序的不同会导致 f4 的结果不同，以上表达式在不同编译器上的计算结果可能不一样，建议增加括号明确计算顺序。
 
 
 
@@ -2684,7 +2687,7 @@ a[sizeof(a) - 1] = '\0';
 char buff[256];
 char *editor = getenv("EDITOR");
 if (editor != NULL) {
-    strcpy(buff，editor);
+    strcpy(buff, editor);
 }
 ```
 
@@ -2772,9 +2775,9 @@ int main(int argc, char* argv[])
     }
     length = atoi(argv[1]);//如果atoi返回的长度为负数
     
-    if (length<BUF_SIZE) //len为负数,长度检查无效
+    if (length < BUF_SIZE) //len为负数,长度检查无效
     {
-        memcpy(buf，argv[2]，length);/*带符号的1en被转换为size_t类型的无符号整数，负值被解释为一个极大的正整数。memcpy()调用时引发buf缓冲区溢出*/
+        memcpy(buf, argv[2], length);/*带符号的1en被转换为size_t类型的无符号整数，负值被解释为一个极大的正整数。memcpy()调用时引发buf缓冲区溢出*/
         printf("Data copied\n");
     }
     else {
@@ -2788,7 +2791,7 @@ int main(int argc, char* argv[])
 ```c
 #define BUF_SIZE 10 
 
-int main(int argc，char* argv[])
+int main(int argc, char* argv[])
 {
     unsigned int length;
     char buf[BUF_SIZE];
@@ -2796,8 +2799,8 @@ int main(int argc，char* argv[])
         return -1;
     }
     length = atoi(argv[1]);
-    if (length< BUF_SIZE) {
-        memcpy (buf，argv[2],length);
+    if (length < BUF_SIZE) {
+        memcpy (buf, argv[2], length);
         printf("Data copied\n");
     }
     else {
@@ -2820,14 +2823,14 @@ int main(int argc, char* argv[])
     }
     length = atoi(argv[1]);
     if ((length > 0) && (length < BUF_SIZE)) {
-        memcpy (buf，argv[2], length);
+        memcpy (buf, argv[2], length);
         printf("Data copied\n");
     }
     else {
         printf("Too much data\n");
     }
     return 0;
-} 
+}
 ```
 
  
@@ -2841,7 +2844,7 @@ int main(int argc, char* argv[])
 示例：
 
 ```c
-int main(int argc，char* argv[]) 
+int main(int argc, char* argv[]) 
 {
     unsigned short total = strlen(argv[1]) + strlen(argv[2])+ 1;
     char* buffer = (char*)malloc(total);
@@ -2857,7 +2860,7 @@ int main(int argc，char* argv[])
 正确写法：将涉及到计算的变量声明为统一的类型，并检查计算结果。
 
 ```c
-int main(int argc，char* argv[])
+int main(int argc, char* argv[])
 {
     size_t total = strlen(argv[1]) + strlen(argv[2]) + 1;
     if ((total <= strlen(argv[1])) || (total <= strlen(argv[2])))
@@ -2866,7 +2869,7 @@ int main(int argc，char* argv[])
         return -1;
     }
     char* buffer = (char*)malloc(total);
-    strcpy(buffer，argv[1]);
+    strcpy(buffer, argv[1]);
     strcat(buffer, argv[2]);
     free(buffer);
     return 0;
@@ -2935,7 +2938,7 @@ printf("%s", input);
 ```c
 void check_password(char *user, char *password)
 {
-    if (strcmp (password(user)，password) != 0)
+    if (strcmp (password(user), password) != 0)
     {
         char *msg = malloc(strlen(user) + 100);
         if (!msg)
@@ -3080,24 +3083,25 @@ happy; useradd attacker
 正确做法：使用 POSIX 函数 execve() 代替 system()
 
 ```c
-\1. **void** secuExec (**char** *input)
-\2. **{
-\3.   pid_t pid;
-\4.   **char** ***const** args[] = {""，input，NULL};
-\5.   **char** ***const** envs[] = {NULL};
-\6.   pid = fork();
-\7.   **if** (pid == -1)
-\8.   {
-\9.     puts("Tork error");
-\10.   }
-\11.   **else** **if** (pid == 0)
-\12.   {
-\13.     **if** (execve("/usr/bin/any_exe"，args，envs)== -1)
-\14.     {
-\15.       puts("Error executing any_exe") ;
-\16.     }
-\17.   **return**;
-\18. }
+void secuExec (char *input)
+{
+    pid_t pid;
+    char *const args[] = {"", input, NULL};
+    char *const envs[] = {NULL};
+    pid = fork();
+    if (pid == -1)
+    {
+        puts("Tork error");
+    }
+    else if (pid == 0)
+    {
+        if (execve("/usr/bin/any_exe", args, envs) == -1)
+        {
+            puts("Error executing any_exe");
+        }
+    }
+    return;
+}
 ```
 
 Windows 环境可能对 execve() 的支持不是很完善，建议使用 Win32 API CreateProcess() 代替 system()。
